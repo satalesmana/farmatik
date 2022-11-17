@@ -1,0 +1,12 @@
+version: 1.0.0
+app:
+  name: "Farmatik"
+  host: 0.0.0.0
+  port: 8000
+database:
+  host: 127.0.0.1
+  port: 3306
+  username: "root"
+  password: "Welcome123"
+  name: "app-farmatik"
+
