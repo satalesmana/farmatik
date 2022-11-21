@@ -26,5 +26,6 @@ func Routes(route *gin.Engine) *gin.Engine {
 	ProductRoutes(route)
 	AuthRoutes(route)
 	PenjualanRoutes(route)
+	AppConfigRoutes(route)
 	return route
 }
