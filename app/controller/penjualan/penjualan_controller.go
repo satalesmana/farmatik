@@ -45,14 +45,16 @@ func (m *uscase) AddNew(c *gin.Context) {
 
 	//add to detail data
 	dataDetail := data.PenjualanDetail
-	for i := 0; i < len(dataDetail); i++ {
-		var (
-			item *PenjualanDetailModel.PenjualanDetail
-		)
+	for _, v := range dataDetail {
+		dataDetail := &PenjualanDetailModel.PenjualanDetail{
+			ID:          v.ID,
+			PenjualanId: lastID,
+			ProductId:   v.ProductId,
+			Harga:       v.Harga,
+			Qty:         v.Qty,
+		}
 
-		item.PenjualanId = data.ID
-
-		_, errDetail := m.PenjualanDetailModel.Insert(item)
+		_, errDetail := m.PenjualanDetailModel.Insert(dataDetail)
 		if errDetail != nil {
 			c.JSON(response.Format(http.StatusInternalServerError, err))
 			return
@@ -81,7 +83,18 @@ func (m *uscase) FindById(c *gin.Context) {
 		c.JSON(response.Format(http.StatusInternalServerError, err))
 		return
 	}
-	data.PenjualanDetail = resDetail
+
+	//looping data array
+	for _, v := range resDetail {
+		dataDetail := &PenjualanDetailModel.PenjualanDetail{
+			ID:          v.ID,
+			PenjualanId: v.PenjualanId,
+			ProductId:   v.ProductId,
+			Harga:       v.Harga,
+			Qty:         v.Qty,
+		}
+		data.PenjualanDetail = append(data.PenjualanDetail, dataDetail)
+	}
 
 	c.JSON(response.Format(http.StatusOK, nil, data))
 }

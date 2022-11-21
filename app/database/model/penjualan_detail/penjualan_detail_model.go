@@ -11,7 +11,7 @@ type Handler interface {
 }
 
 type PenjualanDetail struct {
-	ID          int64  `json:"id"`
+	ID          int64  `json:"id,omitempty"`
 	PenjualanId string `json:"penjualan_id,omitempty"`
 	ProductId   string `json:"product_id,omitempty"`
 	Harga       int64  `json:"harga,omitempty"`
