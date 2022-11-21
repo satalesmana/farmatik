@@ -66,7 +66,15 @@ func (m *uscase) AddNew(c *gin.Context) {
 	c.JSON(response.Format(http.StatusOK, nil, data))
 }
 
-func (m *uscase) GetAll(c *gin.Context) {}
+func (m *uscase) GetAll(c *gin.Context) {
+	data, err := m.PenjualanModel.GetAll()
+	if err != nil {
+		c.JSON(response.Format(http.StatusInternalServerError, err))
+		return
+	}
+
+	c.JSON(response.Format(http.StatusOK, nil, data))
+}
 
 func (m *uscase) FindById(c *gin.Context) {
 	id := c.Param("id")

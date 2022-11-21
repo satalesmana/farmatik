@@ -13,6 +13,7 @@ func PenjualanRoutes(route *gin.Engine) *gin.Engine {
 	{
 		routers.POST("/", penjualanEndpoints.AddNew)
 		routers.GET("/:id", penjualanEndpoints.FindById)
+		routers.GET("/", penjualanEndpoints.GetAll)
 	}
 
 	return route

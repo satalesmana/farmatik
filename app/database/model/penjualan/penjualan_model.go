@@ -10,6 +10,7 @@ import (
 type Handler interface {
 	Insert(data *Penjualan) (string, error)
 	GetById(id string) (Penjualan, error)
+	GetAll() ([]Penjualan, error)
 }
 
 type Penjualan struct {
@@ -88,6 +89,37 @@ func (uc *uscase) GetById(id string) (Penjualan, error) {
 		); err != nil {
 			return penjualan, err
 		}
+	}
+
+	return penjualan, nil
+}
+
+func (uc *uscase) GetAll() ([]Penjualan, error) {
+	var penjualan []Penjualan
+
+	query := `SELECT id, createdBy, createdDate, namaPelanggan, tipePelanggan, trxType, docPendukung
+		FROM penjualan`
+
+	res, err := uc.database.Query(query)
+	if err != nil {
+		return penjualan, err
+	}
+	defer res.Close()
+
+	for res.Next() {
+		var item Penjualan
+		if err := res.Scan(
+			&item.ID,
+			&item.CreatedBy,
+			&item.CreatedDate,
+			&item.NamaPelanggan,
+			&item.TipePelanggan,
+			&item.TrxType,
+			&item.DocPendukung,
+		); err != nil {
+			return penjualan, err
+		}
+		penjualan = append(penjualan, item)
 	}
 
 	return penjualan, nil
