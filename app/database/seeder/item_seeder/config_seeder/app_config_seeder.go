@@ -22,8 +22,9 @@ func NewSeederHandler() Handler {
 }
 
 func (uc *uscase) AppConfigSeeder() {
-	query := `REPLACE INTO app_config (id, keterangan, configValue)  
-	VALUES ('cfg_harga_jual', 'Config Harga Jual', '[{"value": "cfg_hrg_umum", "label": "Umum"}, {"value": "cfg_hrg_bidan", "label": "Tenaga Medis (Bidan)"}]')`
+	query := `REPLACE INTO app_config (id, keterangan, configValue)  VALUES 
+	('cfg_harga_jual', 'Config Harga Jual', '[{"value": "cfg_hrg_umum", "label": "Umum"}, {"value": "cfg_hrg_bidan", "label": "Tenaga Medis (Bidan)"}]'),
+	('cfg_type_trx', 'Config Tipe Transaksi', '[{"value": "cfg_trx_tunai", "label": "Tunai"}, {"value": "cfg_trx_nontunai", "label": "Non Tunai"}]')`
 
 	res, err := uc.database.Exec(query)
 
