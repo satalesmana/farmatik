@@ -66,6 +66,7 @@ func (m *uscase) UseMiddleware() gin.HandlerFunc {
 
 		// token valid and forward to original request
 		c.Set("id", metadata.ID)
+		c.Set("user_id", res.IDUser)
 		c.Set("email", metadata.Email)
 		c.Set("name", metadata.Name)
 

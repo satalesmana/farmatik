@@ -3,8 +3,10 @@ package PenjualanController
 import (
 	PenjualanModel "farmatik/app/database/model/penjualan"
 	PenjualanDetailModel "farmatik/app/database/model/penjualan_detail"
+	ProductmutationModel "farmatik/app/database/model/product_mutation"
 	"farmatik/system/response"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -18,12 +20,14 @@ type Handler interface {
 type uscase struct {
 	PenjualanModel       PenjualanModel.Handler
 	PenjualanDetailModel PenjualanDetailModel.Handler
+	ProductmutationModel ProductmutationModel.Handler
 }
 
 func NewPenjualanControllerHandler() Handler {
 	return &uscase{
 		PenjualanModel:       PenjualanModel.NewPenjualanHandler(),
 		PenjualanDetailModel: PenjualanDetailModel.NewPenjualanDetailHandler(),
+		ProductmutationModel: ProductmutationModel.NewProductMutationHandler(),
 	}
 }
 
@@ -31,6 +35,9 @@ func (m *uscase) AddNew(c *gin.Context) {
 	var (
 		data PenjualanModel.Penjualan
 	)
+	curDate := time.Now()
+	myDate := curDate.Format("2006-01-02") //fmt.Println(t.Format("2006-01-02 15:04:05"))
+	curId := c.GetString("user_id")
 
 	if err := c.ShouldBindJSON(&data); err != nil {
 		c.JSON(response.Format(http.StatusBadRequest, err))
@@ -56,7 +63,23 @@ func (m *uscase) AddNew(c *gin.Context) {
 
 		_, errDetail := m.PenjualanDetailModel.Insert(dataDetail)
 		if errDetail != nil {
-			c.JSON(response.Format(http.StatusInternalServerError, err))
+			c.JSON(response.Format(http.StatusInternalServerError, errDetail))
+			return
+		}
+
+		//add data mutation
+		mutationData := &ProductmutationModel.ProductMutation{
+			ID:          0,
+			ProductId:   v.ProductId,
+			TrxCode:     lastID,
+			CreatedBy:   curId,
+			CreatedDate: myDate,
+			Type:        "O",
+			Value:       v.Qty,
+		}
+		_, errMutation := m.ProductmutationModel.Insert(mutationData)
+		if errMutation != nil {
+			c.JSON(response.Format(http.StatusInternalServerError, errMutation))
 			return
 		}
 	}

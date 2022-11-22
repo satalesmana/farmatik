@@ -10,10 +10,10 @@ type Handler interface {
 }
 
 type ProductMutation struct {
-	ID          int64  `json:"id"`
+	ID          int64  `json:"id,omitempty"`
 	ProductId   string `json:"id_product,omitempty"`
 	TrxCode     string `json:"trx_code,omitempty"`
-	CreatedBy   int64  `json:"created_by,omitempty"`
+	CreatedBy   string `json:"created_by,omitempty"`
 	CreatedDate string `json:"created_date,omitempty"`
 	Type        string `json:"type,omitempty"`
 	Value       int64  `json:"value,omitempty"`
