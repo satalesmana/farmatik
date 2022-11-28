@@ -3,11 +3,12 @@ package ProductModel
 import (
 	"database/sql"
 	db "farmatik/app/database"
+	DBHelper "farmatik/app/database/helper"
 	hargajualModel "farmatik/app/database/model/hargajual"
 )
 
 type Handler interface {
-	Insert(data *Product) (int64, error)
+	Insert(data *Product) (*Product, error)
 	GetByid(id string) (Product, error)
 	GetAll() ([]Product, error)
 	Delete(id string) (string, error)
@@ -15,7 +16,7 @@ type Handler interface {
 }
 
 type Product struct {
-	ID          int64                       `json:"id"`
+	ID          string                      `json:"id,omitempty"`
 	NamaProduct string                      `json:"nama_product,omitempty"`
 	HargaBeli   int64                       `json:"harga_beli,omitempty"`
 	Satuan      string                      `json:"satuan,omitempty"`
@@ -35,24 +36,27 @@ func NewProductModelHandler() Handler {
 }
 
 // Insert implements Handler
-func (uc *uscase) Insert(data *Product) (int64, error) {
+func (uc *uscase) Insert(data *Product) (*Product, error) {
 	query := `INSERT INTO product(
-		namaProduct, hargaBeli, satuan  
-	) VALUES(?, ?, ?)`
+		id, namaProduct, hargaBeli, satuan  
+	) VALUES(?, ?, ?, ?)`
 
-	res, err := uc.database.Exec(query,
+	//generate trx number
+	trxId, errTrxId := DBHelper.GenerateAutoId("id", "PRD", "product")
+	if errTrxId != nil {
+		return data, errTrxId
+	}
+	data.ID = trxId
+
+	_, err := uc.database.Exec(query,
+		&data.ID,
 		&data.NamaProduct,
 		&data.HargaBeli,
 		&data.Satuan,
 	)
 
 	if err != nil {
-		return 0, err
-	}
-
-	lastID, err := res.LastInsertId()
-	if err != nil {
-		return 0, err
+		return data, err
 	}
 
 	//add value to harga jual
@@ -61,18 +65,18 @@ func (uc *uscase) Insert(data *Product) (int64, error) {
 			hargaJual hargajualModel.HargaJual
 		)
 
-		hargaJual.IdProduct = lastID
+		hargaJual.IdProduct = trxId
 		hargaJual.Harga = data.HargaJual[i].Harga
 		hargaJual.Kategori = data.HargaJual[i].Kategori
 
 		_, err := uc.hargajualModel.Insert(&hargaJual)
 
 		if err != nil {
-			return 0, err
+			return data, err
 		}
 	}
 
-	return lastID, nil
+	return data, nil
 }
 
 func (uc *uscase) GetByid(id string) (Product, error) {

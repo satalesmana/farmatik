@@ -7,7 +7,7 @@ import (
 
 func ProductMigration(db *sql.DB) {
 	_, err := db.Exec("CREATE TABLE `product` (" +
-		"`id` INT NOT NULL AUTO_INCREMENT," +
+		"`id` VARCHAR(10) NOT NULL," +
 		"`namaProduct` VARCHAR(50) NULL DEFAULT NULL," +
 		"`hargaBeli` INT(10) NULL DEFAULT NULL," +
 		"`satuan` VARCHAR(50) NULL DEFAULT NULL," +

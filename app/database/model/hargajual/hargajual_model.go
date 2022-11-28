@@ -11,8 +11,8 @@ type Handler interface {
 }
 
 type HargaJual struct {
-	ID        int64  `json:"id"`
-	IdProduct int64  `json:"id_product,omitempty"`
+	ID        int64  `json:"id,omitempty"`
+	IdProduct string `json:"id_product,omitempty"`
 	Kategori  string `json:"kategori,omitempty"`
 	Harga     int64  `json:"harga,omitempty"`
 }

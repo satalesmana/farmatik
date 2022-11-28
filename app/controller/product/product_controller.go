@@ -4,7 +4,6 @@ import (
 	ProductModel "farmatik/app/database/model/product"
 	"farmatik/system/response"
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -42,7 +41,7 @@ func (m *uscase) AddNew(c *gin.Context) {
 		c.JSON(response.Format(http.StatusInternalServerError, err))
 		return
 	}
-	data.ID = lastID
+	data.ID = lastID.ID
 
 	c.JSON(response.Format(http.StatusOK, nil, data))
 
@@ -80,8 +79,8 @@ func (m *uscase) Edit(c *gin.Context) {
 		return
 	}
 	strID := c.Param("id")
-	intID, _ := strconv.ParseInt(strID, 10, 64)
-	data.ID = intID
+	//intID, _ := strconv.ParseInt(strID, 10, 64)
+	data.ID = strID
 
 	res, err := m.ProductModel.Update(&data)
 	if err != nil {
