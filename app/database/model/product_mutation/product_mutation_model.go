@@ -17,6 +17,7 @@ type ProductMutation struct {
 	CreatedDate string `json:"created_date,omitempty"`
 	Type        string `json:"type,omitempty"`
 	Value       int64  `json:"value,omitempty"`
+	Keterangan  string `json:"keterangan,omitempty"`
 }
 
 type uscase struct {
@@ -31,8 +32,8 @@ func NewProductMutationHandler() Handler {
 
 func (uc *uscase) Insert(data *ProductMutation) (int64, error) {
 	query := `INSERT INTO product_mutation(
-		productId, trxCode, createdBy, createdDate,type,value  
-	) VALUES(?, ?, ?, ?, ?, ?)`
+		productId, trxCode, createdBy, createdDate,type,value,keterangan  
+	) VALUES(?, ?, ?, ?, ?, ?, ?)`
 
 	res, err := uc.database.Exec(query,
 		&data.ProductId,
@@ -41,6 +42,7 @@ func (uc *uscase) Insert(data *ProductMutation) (int64, error) {
 		&data.CreatedDate,
 		&data.Type,
 		&data.Value,
+		&data.Keterangan,
 	)
 
 	if err != nil {

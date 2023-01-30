@@ -14,6 +14,7 @@ func ProductMutation(db *sql.DB) {
 		"`createdDate` DATE NULL DEFAULT NULL," +
 		"`type` VARCHAR(1) NULL DEFAULT NULL," + // I, O
 		"`value` INT NULL DEFAULT NULL," +
+		"`keterangan` VARCHAR(150) NULL DEFAULT NULL," +
 		"PRIMARY KEY (`id`))")
 	if err != nil {
 		log.Println(err)
